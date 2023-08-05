@@ -5,7 +5,7 @@ import validate from '../middleware/validaton.middleware.js';
 
 const router = Router();
 
-router.post('/notes', validate(newTaskSchema), (req: Request, res: Response) => {
+router.post('/', validate(newTaskSchema), (req: Request, res: Response) => {
   const newTask: ETask = { ...req.body };
   const result = taskService.create(newTask);
 
@@ -27,7 +27,7 @@ router.delete('/:id', (req: Request, res: Response) => {
   }
 });
 
-router.patch('/notes/:id', validate(newTaskSchema), (req: Request, res: Response) => {
+router.patch('/:id', validate(newTaskSchema), (req: Request, res: Response) => {
   try {
     const updatedData = { ...req.body };
     const { id } = req.params;
@@ -43,7 +43,7 @@ router.patch('/notes/:id', validate(newTaskSchema), (req: Request, res: Response
   }
 });
 
-router.get('/notes', (req: Request, res: Response) => {
+router.get('/', (req: Request, res: Response) => {
   const result = taskService.getAll();
 
   if (result) {
@@ -53,7 +53,7 @@ router.get('/notes', (req: Request, res: Response) => {
   }
 });
 
-router.get('/notes/:id', (req: Request, res: Response) => {
+router.get('/:id', (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const result = taskService.get(id);
@@ -63,7 +63,7 @@ router.get('/notes/:id', (req: Request, res: Response) => {
   }
 });
 
-router.get('/notes/stats', (req: Request, res: Response) => {
+router.get('/stats', (req: Request, res: Response) => {
   const result = taskService.getStats();
   res.status(200).json(result);
 });
