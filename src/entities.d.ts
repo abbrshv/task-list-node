@@ -8,3 +8,9 @@ interface ETask {
   dates?: string | null;
   isArchived?: boolean;
 }
+
+interface TaskStatObject {
+  categoryName: string;
+  archived: number;
+  active: number;
+}
