@@ -49,7 +49,9 @@ class TaskService {
 
     if (!this.isDTask(task)) return null;
 
-    const updatedTask: DTask = { ...task, ...updatedData };
+    const { createdDate } = task;
+
+    const updatedTask: DTask = { ...task, ...updatedData, id: id, createdDate: createdDate };
     updatedTask.dates = this.captureDates(updatedTask);
 
     return taskRepository.update(updatedTask);
