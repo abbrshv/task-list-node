@@ -30,18 +30,16 @@ class TaskService {
 
   get(id: string) {
     const result = taskRepository.getOne(id);
-    return result || null;
+    if (!result) {
+      throw new Error(`Task with id: ${id} not found`);
+    }
+    return result;
   }
 
   create(task: ETask) {
     const newTask = { ...task, isArchived: false, dates: this.captureDates(task) };
 
-    const result = taskRepository.create(newTask);
-    if (!result) {
-      throw new Error('Could not create task');
-    }
-
-    return result;
+    return taskRepository.create(newTask);
   }
 
   update(id: string, updatedData: Partial<DTask>) {
