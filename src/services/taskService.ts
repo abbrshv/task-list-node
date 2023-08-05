@@ -1,11 +1,13 @@
 import taskRepository from '../repositories/taskRepository.js';
 
 class TaskService {
-  isTask(obj: any): obj is ETask {
-    return 'name' in obj && 'category' in obj && 'content' in obj;
+  isDTask(obj: any): obj is DTask {
+    return (
+      'name' in obj && 'category' in obj && 'content' in obj && 'createdDate' in obj && 'id' in obj
+    );
   }
 
-  captureDates(task: ETask) {
+  captureDates(task: ETask | DTask) {
     const dateRegex = /(0?[1-9]|[12][0-9]|3[01])(\/|-)(0?[1-9]|1[1,2])(\/|-)(19|20)\d{2}/g;
     const datesArray = task.content.match(dateRegex);
 
@@ -13,8 +15,7 @@ class TaskService {
   }
 
   getAll() {
-    const result = taskRepository.getAll();
-    return result || null;
+    return taskRepository.getAll() || null;
   }
 
   getAllActive() {
@@ -29,10 +30,7 @@ class TaskService {
 
   get(id: string) {
     const result = taskRepository.getOne(id);
-    if (!result) {
-      throw new Error(`Task with id ${id} doesn't exist`);
-    }
-    return result;
+    return result || null;
   }
 
   create(task: ETask) {
@@ -46,31 +44,19 @@ class TaskService {
     return result;
   }
 
-  update(id: string, updatedData: object) {
+  update(id: string, updatedData: Partial<DTask>) {
     const task = this.get(id);
 
-    if (!this.isTask(task)) return null;
+    if (!this.isDTask(task)) return null;
 
-    const updatedTask: ETask = { ...task, ...updatedData };
+    const updatedTask: DTask = { ...task, ...updatedData };
     updatedTask.dates = this.captureDates(updatedTask);
 
-    return taskRepository.update(id, updatedTask);
+    return taskRepository.update(updatedTask);
   }
 
   delete(id: string) {
-    const result = taskRepository.delete(id);
-    if (!result) {
-      throw new Error(`Task with id ${id} doesn't exist`);
-    }
-    return result;
-  }
-
-  changeArchiveStatus(id: string) {
-    const task = this.get(id);
-
-    const updatedTask = { ...task, isArchived: !task.isArchived };
-
-    this.update(id, updatedTask);
+    return taskRepository.delete(id);
   }
 
   getStats() {
