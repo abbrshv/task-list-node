@@ -2,6 +2,7 @@ import { Request, Response, Router } from 'express';
 import taskService from '../services/taskService.js';
 import newTaskSchema from '../middleware/newTaskSchema.js';
 import validate from '../middleware/validaton.middleware.js';
+import updateTaskSchema from '../middleware/updateTaskSchema.js';
 
 const router = Router();
 
@@ -27,7 +28,7 @@ router.delete('/:id', (req: Request, res: Response) => {
   }
 });
 
-router.patch('/:id', validate(newTaskSchema), (req: Request, res: Response) => {
+router.patch('/:id', validate(updateTaskSchema), (req: Request, res: Response) => {
   try {
     const updatedData = { ...req.body };
     const { id } = req.params;
