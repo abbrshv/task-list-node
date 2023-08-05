@@ -2,9 +2,9 @@ import { v4 as uuidv4 } from 'uuid';
 import dbAdapter, { Data } from '../database/db.js';
 
 class BaseRepository {
-  dbContext: DTask[]; // Should support other types
+  private dbContext: DTask[];
 
-  collectionName: string;
+  private collectionName: string;
 
   constructor(collectionName: keyof Data) {
     this.dbContext = dbAdapter.data[collectionName];
@@ -16,11 +16,11 @@ class BaseRepository {
   }
 
   getAll() {
-    return [...this.dbContext];
+    return this.dbContext.length > 0 ? [...this.dbContext] : null;
   }
 
   getOne(id: string) {
-    return { ...this.dbContext.find((item) => item.id === id) };
+    return { ...this.dbContext.find((item) => item.id === id) } || null;
   }
 
   create(data: ETask) {
@@ -30,13 +30,16 @@ class BaseRepository {
     return { ...this.dbContext.find((item) => item.id === newData.id) };
   }
 
-  update(id: string, dataToUpdate: object) {
-    const oldData = this.dbContext.find((item) => item.id === id);
-    if (!oldData) return null;
-    const newData = { ...oldData, ...dataToUpdate };
-    this.dbContext = [...this.dbContext.filter((item) => item.id !== id), newData];
+  update(newItem: DTask) {
+    const index = this.dbContext.findIndex((item) => item.id === newItem.id);
+    if (index === -1) return null;
+    this.dbContext = [
+      ...this.dbContext.slice(0, index),
+      newItem,
+      ...this.dbContext.slice(index + 1),
+    ];
     dbAdapter.write();
-    return newData;
+    return newItem;
   }
 
   delete(id: string) {
