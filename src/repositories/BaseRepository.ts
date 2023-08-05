@@ -30,16 +30,16 @@ class BaseRepository {
     return { ...this.dbContext.find((item) => item.id === newData.id) };
   }
 
-  update(newItem: DTask) {
-    const index = this.dbContext.findIndex((item) => item.id === newItem.id);
+  update(updatedItem: DTask) {
+    const index = this.dbContext.findIndex((item) => item.id === updatedItem.id);
     if (index === -1) return null;
     this.dbContext = [
       ...this.dbContext.slice(0, index),
-      newItem,
+      updatedItem,
       ...this.dbContext.slice(index + 1),
     ];
     dbAdapter.write();
-    return newItem;
+    return updatedItem;
   }
 
   delete(id: string) {
