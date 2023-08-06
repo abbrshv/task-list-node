@@ -30,7 +30,7 @@ class BaseRepository<T extends DatabaseItem> {
 
   create(data: Omit<T, 'id' | 'createdDate'>): T | null {
     const newData = { ...data, createdDate: new Date(), id: this.generateId() };
-    this.dbContext = [...this.dbContext, newData] as T[];
+    this.dbContext.push(newData as T);
     dbAdapter.write();
     return { ...this.dbContext.find((item) => item.id === newData.id) } as T;
   }
@@ -38,11 +38,7 @@ class BaseRepository<T extends DatabaseItem> {
   update(updatedItem: T): T | null {
     const index = this.dbContext.findIndex((item) => item.id === updatedItem.id);
     if (index === -1) return null;
-    this.dbContext = [
-      ...this.dbContext.slice(0, index),
-      updatedItem,
-      ...this.dbContext.slice(index + 1),
-    ];
+    this.dbContext[index] = updatedItem;
     dbAdapter.write();
     return updatedItem;
   }
@@ -50,7 +46,7 @@ class BaseRepository<T extends DatabaseItem> {
   delete(id: string): boolean {
     const index = this.dbContext.findIndex((item) => item.id === id);
     if (index === -1) return false;
-    this.dbContext = this.dbContext.filter((item) => item.id !== id);
+    this.dbContext.splice(index, 1);
     return true;
   }
 }
