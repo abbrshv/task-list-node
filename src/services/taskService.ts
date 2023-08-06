@@ -1,4 +1,5 @@
 import taskRepository from '../repositories/taskRepository.js';
+import { TASK_CATEGORIES } from '../constants/taskCategories.js';
 
 class TaskService {
   isDTask(obj: any): obj is DTask {
@@ -15,17 +16,15 @@ class TaskService {
   }
 
   getAll() {
-    return taskRepository.getAll() || null;
+    return taskRepository.getAll();
   }
 
   getAllActive() {
-    const tasks = this.getAll();
-    return tasks ? tasks.filter((task) => !task.isArchived) : [];
+    return this.getAll().filter((task) => !task.isArchived);
   }
 
   getAllArchived() {
-    const tasks = this.getAll();
-    return tasks ? tasks.filter((task) => task.isArchived) : [];
+    return this.getAll().filter((task) => task.isArchived);
   }
 
   get(id: string) {
@@ -60,13 +59,12 @@ class TaskService {
   }
 
   getStats() {
-    const activeTasks = this.getAllActive();
-    const archivedTasks = this.getAllArchived();
+    const tasks = this.getAll();
 
-    const stats: TaskStatObject[] = categories.map((category) => ({
+    const stats: TaskStatObject[] = TASK_CATEGORIES.map((category) => ({
       categoryName: category[0].toUpperCase() + category.slice(1),
-      archived: archivedTasks.filter((task) => task.category === category).length,
-      active: activeTasks.filter((task) => task.category === category).length,
+      active: tasks.filter((task) => task.category === category && !task.isArchived).length,
+      archived: tasks.filter((task) => task.category === category && task.isArchived).length,
     }));
 
     return stats;
