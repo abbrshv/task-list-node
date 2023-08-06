@@ -19,17 +19,9 @@ class TaskService {
     return taskRepository.getAll();
   }
 
-  getAllActive() {
-    return this.getAll().filter((task) => !task.isArchived);
-  }
-
-  getAllArchived() {
-    return this.getAll().filter((task) => task.isArchived);
-  }
-
   get(id: string) {
     const result = taskRepository.getOne(id);
-    if (!result) {
+    if (Object.keys(result).length === 0 && result.constructor === Object) {
       throw new Error(`Task with id: ${id} not found`);
     }
     return result;
