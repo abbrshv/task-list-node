@@ -2,7 +2,8 @@
 
 Test assignment solution
 
-A simple Node.js/Express Typescript application with a few REST endpoints.
+A simple Node.js/Express Typescript application with a few REST endpoints. 
+Uses lowdb for basic JSON data storage and Yup for schema validation.
 
 ## Installation
 
