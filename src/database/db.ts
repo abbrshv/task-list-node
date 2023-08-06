@@ -4,9 +4,9 @@ import { fileURLToPath } from 'node:url';
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
 
-export type Data = {
-  tasks: DTask[];
-};
+export interface Data {
+  [key: string]: any[];
+}
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const __dirname = dirname(fileURLToPath(import.meta.url));
