@@ -16,7 +16,7 @@ class BaseRepository {
   }
 
   getAll() {
-    return this.dbContext.length > 0 ? [...this.dbContext] : null;
+    return [...this.dbContext];
   }
 
   getOne(id: string) {
