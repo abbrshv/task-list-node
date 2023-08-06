@@ -8,6 +8,6 @@ const updateTaskSchema: ObjectSchema<Partial<DTask>> = object({
   isArchived: boolean(),
   createdDate: date(),
   id: string(),
-});
+}).noUnknown(true);
 
 export default updateTaskSchema;
