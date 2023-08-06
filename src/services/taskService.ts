@@ -1,5 +1,6 @@
 import taskRepository from '../repositories/taskRepository.js';
 import { TASK_CATEGORIES } from '../constants/taskCategories.js';
+import CustomError from '../helpers/CustomError.js';
 
 class TaskService {
   isDTask(obj: any): obj is DTask {
@@ -22,24 +23,24 @@ class TaskService {
   get(id: string) {
     const result = taskRepository.getOne(id);
     if (Object.keys(result).length === 0 && result.constructor === Object) {
-      throw new Error(`Task with id: ${id} not found`);
+      throw new CustomError(`Task with id: ${id} not found`, 404);
     }
     return result;
   }
 
   create(task: ETask) {
     const newTask = { ...task, isArchived: false, dates: this.captureDates(task) };
+    const result = taskRepository.create(newTask);
+    if (!result) throw new Error('Could not create task');
 
-    return taskRepository.create(newTask);
+    return result;
   }
 
   update(id: string, updatedData: Partial<DTask>) {
     const task = this.get(id);
-
     if (!this.isDTask(task)) return null;
 
     const { createdDate } = task;
-
     const updatedTask: DTask = { ...task, ...updatedData, id: id, createdDate: createdDate };
     updatedTask.dates = this.captureDates(updatedTask);
 
@@ -47,7 +48,7 @@ class TaskService {
   }
 
   delete(id: string) {
-    return taskRepository.delete(id);
+    return this.get(id) && taskRepository.delete(id);
   }
 
   getStats() {
