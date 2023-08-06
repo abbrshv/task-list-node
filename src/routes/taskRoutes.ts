@@ -11,34 +11,29 @@ router.post('/', validate(newTaskSchema), (req: Request, res: Response) => {
   const result = taskService.create(newTask);
 
   if (result) {
-    res.status(200).json(result);
+    res.status(201).json(result);
   } else {
     res.status(400).json({ message: 'Cannot create task' });
   }
 });
 
 router.delete('/:id', (req: Request, res: Response) => {
-  const { id } = req.params;
-  const result = taskService.delete(id);
+  try {
+    const { id } = req.params;
+    const result = taskService.delete(id);
 
-  if (result) {
-    res.status(200).json({ message: result });
-  } else {
-    res.status(400).json({ message: 'Cannot delete task' });
+    res.status(200).json({ deleted: result });
+  } catch (error: any) {
+    res.status(404).json({ type: error.name, message: error.message });
   }
 });
 
 router.patch('/:id', validate(updateTaskSchema), (req: Request, res: Response) => {
   try {
-    const updatedData = { ...req.body };
     const { id } = req.params;
-    const result = taskService.update(id, updatedData);
+    const result = taskService.update(id, { ...req.body });
 
-    if (result) {
-      res.status(200).json(result);
-    } else {
-      res.status(400).json({ message: 'Cannot update task' });
-    }
+    res.status(200).json(result);
   } catch (error: any) {
     res.status(404).json({ type: error.name, message: error.message });
   }
@@ -58,6 +53,7 @@ router.get('/:id', (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const result = taskService.get(id);
+
     res.status(200).json(result);
   } catch (error: any) {
     res.status(404).json({ type: error.name, message: error.message });
