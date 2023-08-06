@@ -62,7 +62,7 @@ class TaskService {
     const tasks = this.getAll();
 
     const stats: TaskStatObject[] = TASK_CATEGORIES.map((category) => ({
-      categoryName: category[0].toUpperCase() + category.slice(1),
+      categoryName: category,
       active: tasks.filter((task) => task.category === category && !task.isArchived).length,
       archived: tasks.filter((task) => task.category === category && task.isArchived).length,
     }));
