@@ -22,7 +22,7 @@ class TaskService {
 
   get(id: string) {
     const result = taskRepository.getOne(id);
-    if (Object.keys(result).length === 0 && result.constructor === Object) {
+    if (result && Object.keys(result).length === 0 && result.constructor === Object) {
       throw new CustomError(`Task with id: ${id} not found`, 404);
     }
     return result;
