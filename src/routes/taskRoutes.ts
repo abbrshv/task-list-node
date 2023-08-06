@@ -7,13 +7,15 @@ import updateTaskSchema from '../middleware/updateTaskSchema.js';
 const router = Router();
 
 router.post('/', validate(newTaskSchema), (req: Request, res: Response) => {
-  const newTask: ETask = { ...req.body };
-  const result = taskService.create(newTask);
+  try {
+    const newTask: ETask = { ...req.body };
+    const result = taskService.create(newTask);
 
-  if (result) {
     res.status(201).json(result);
-  } else {
-    res.status(400).json({ message: 'Cannot create task' });
+  } catch (error: any) {
+    res
+      .status(error.statusCode ? error.statusCode : 500)
+      .json({ type: error.name, message: error.message });
   }
 });
 
@@ -24,7 +26,9 @@ router.delete('/:id', (req: Request, res: Response) => {
 
     res.status(200).json({ deleted: result });
   } catch (error: any) {
-    res.status(404).json({ type: error.name, message: error.message });
+    res
+      .status(error.statusCode ? error.statusCode : 500)
+      .json({ type: error.name, message: error.message });
   }
 });
 
@@ -35,18 +39,32 @@ router.patch('/:id', validate(updateTaskSchema), (req: Request, res: Response) =
 
     res.status(200).json(result);
   } catch (error: any) {
-    res.status(404).json({ type: error.name, message: error.message });
+    res
+      .status(error.statusCode ? error.statusCode : 500)
+      .json({ type: error.name, message: error.message });
   }
 });
 
 router.get('/stats', (req: Request, res: Response) => {
-  const result = taskService.getStats();
-  res.status(200).json(result);
+  try {
+    const result = taskService.getStats();
+    res.status(200).json(result);
+  } catch (error: any) {
+    res
+      .status(error.statusCode ? error.statusCode : 500)
+      .json({ type: error.name, message: error.message });
+  }
 });
 
 router.get('/', (req: Request, res: Response) => {
-  const result = taskService.getAll();
-  res.status(200).json(result);
+  try {
+    const result = taskService.getAll();
+    res.status(200).json(result);
+  } catch (error: any) {
+    res
+      .status(error.statusCode ? error.statusCode : 500)
+      .json({ type: error.name, message: error.message });
+  }
 });
 
 router.get('/:id', (req: Request, res: Response) => {
@@ -56,7 +74,9 @@ router.get('/:id', (req: Request, res: Response) => {
 
     res.status(200).json(result);
   } catch (error: any) {
-    res.status(404).json({ type: error.name, message: error.message });
+    res
+      .status(error.statusCode ? error.statusCode : 500)
+      .json({ type: error.name, message: error.message });
   }
 });
 
