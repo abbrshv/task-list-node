@@ -44,14 +44,14 @@ router.patch('/:id', validate(updateTaskSchema), (req: Request, res: Response) =
   }
 });
 
+router.get('/stats', (req: Request, res: Response) => {
+  const result = taskService.getStats();
+  res.status(200).json(result);
+});
+
 router.get('/', (req: Request, res: Response) => {
   const result = taskService.getAll();
-
-  if (result) {
-    res.status(200).json(result);
-  } else {
-    res.status(404).json({ message: 'No tasks found' });
-  }
+  res.status(200).json(result);
 });
 
 router.get('/:id', (req: Request, res: Response) => {
@@ -62,11 +62,6 @@ router.get('/:id', (req: Request, res: Response) => {
   } catch (error: any) {
     res.status(404).json({ type: error.name, message: error.message });
   }
-});
-
-router.get('/stats', (req: Request, res: Response) => {
-  const result = taskService.getStats();
-  res.status(200).json(result);
 });
 
 export default router;
