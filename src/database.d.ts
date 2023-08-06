@@ -1,6 +1,6 @@
 interface DTask {
   name: string;
-  category: Category;
+  category: 'task' | 'random thought' | 'idea';
   content: string;
   dates?: string | null;
   isArchived?: boolean;
