@@ -4,6 +4,7 @@ interface DTask {
   content: string;
   dates?: string | null;
   isArchived?: boolean;
-  createdDate: Date;
   id: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
