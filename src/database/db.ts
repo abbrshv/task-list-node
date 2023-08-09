@@ -1,22 +1,19 @@
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { Sequelize } from 'sequelize-typescript';
+import Task from './models/Task.js';
 
-import { LowSync } from 'lowdb';
-import { JSONFileSync } from 'lowdb/node';
+const sequelize = new Sequelize(
+  process.env.DB_SCHEMA || 'postgres',
+  process.env.DB_USER || 'postgres',
+  process.env.DB_PASSWORD || '',
+  {
+    host: process.env.DB_HOST || 'localhost',
+    port: Number(process.env.DB_PORT) || 5432,
+    dialect: 'postgres',
+    dialectOptions: {
+      ssl: process.env.DB_SSL === 'true',
+    },
+  },
+);
 
-export interface Data {
-  [key: string]: any[];
-}
-
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const dbFile = join(__dirname, 'database.json');
-
-const defaultData: Data = { tasks: [] };
-const adapter = new JSONFileSync<Data>(dbFile);
-const dbAdapter = new LowSync<Data>(adapter, defaultData);
-
-dbAdapter.read();
-dbAdapter.write();
-
-export default dbAdapter;
+sequelize.addModels([Task]);
+export default sequelize;
