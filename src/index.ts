@@ -5,10 +5,11 @@ import initRoutes from './routes/routes.js';
 import addMockData from './helpers/mockData.js';
 import sequelize from './database/db.js';
 
+dotenv.config();
+
 await sequelize.sync({ force: true });
 
 const app = express();
-dotenv.config();
 
 app.use(cors());
 app.use(express.json());
