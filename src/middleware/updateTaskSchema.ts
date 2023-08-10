@@ -1,5 +1,5 @@
 import { boolean, date, object, ObjectSchema, string } from 'yup';
-import { TASK_CATEGORIES, Category } from '../constants/taskCategories.js';
+import { Category, TASK_CATEGORIES } from '../constants/taskCategories.js';
 
 const updateTaskSchema: ObjectSchema<Partial<DTask>> = object({
   name: string().min(3),
@@ -7,8 +7,10 @@ const updateTaskSchema: ObjectSchema<Partial<DTask>> = object({
   content: string().min(3),
   dates: string().nullable(),
   isArchived: boolean(),
-  createdDate: date(),
   id: string(),
+  createdAt: date(),
+  updatedAt: date(),
+  deletedAt: date(),
 }).noUnknown(true);
 
 export default updateTaskSchema;
