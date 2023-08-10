@@ -24,9 +24,12 @@ class TaskService {
     return taskRepository.create(newTask as Task);
   }
 
-  update(id: string, updatedData: Partial<DTask>) {
-    const updatedDataWithDates = { ...updatedData, dates: this.captureDates(updatedData) };
-    return taskRepository.update(id, updatedDataWithDates);
+  async update(id: string, updatedData: Partial<DTask>) {
+    const updatedTask = { ...updatedData };
+    if (updatedTask.content) {
+      updatedTask.dates = this.captureDates(updatedTask);
+    }
+    return taskRepository.update(id, updatedTask);
   }
 
   delete(id: string) {
