@@ -5,10 +5,9 @@ services:
     restart: always
     build: .
     environment:
-      - PORT=3050
       - DB_HOST=db
     ports:
-      - '3050:3050'
+      - ${PORT}:${PORT}
     depends_on:
       - db
     volumes:
