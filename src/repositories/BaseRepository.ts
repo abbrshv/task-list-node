@@ -1,53 +1,43 @@
-import { v4 as uuidv4 } from 'uuid';
-import dbAdapter, { Data } from '../database/db.js';
+import { Model, ModelCtor } from 'sequelize-typescript';
+import { MakeNullishOptional } from 'sequelize/types/utils';
+import CustomError from '../helpers/CustomError.js';
 
-interface DatabaseItem {
-  id: string;
-  createdDate: Date;
-}
+const notFoundError = (id: string) => new CustomError(`Item with id: ${id} not found`, 404);
 
-class BaseRepository<T extends DatabaseItem> {
-  private dbContext: T[];
+class BaseRepository<T extends Model> {
+  private dbContext: ModelCtor<T>;
 
-  private collectionName: string | number;
-
-  constructor(collectionName: keyof Data) {
-    this.dbContext = dbAdapter.data[collectionName];
-    this.collectionName = collectionName;
+  constructor(dbContext: ModelCtor<T>) {
+    this.dbContext = dbContext;
   }
 
-  generateId() {
-    return uuidv4();
+  async getAll(): Promise<T[]> {
+    return this.dbContext.findAll();
   }
 
-  getAll(): T[] {
-    return [...this.dbContext];
+  async getOne(id: string): Promise<T> {
+    const item = await this.dbContext.findByPk(id);
+    if (!item) throw notFoundError(id);
+    return item;
   }
 
-  getOne(id: string): T | null {
-    return ({ ...this.dbContext.find((item) => item.id === id) } as T) || null;
+  async create(data: MakeNullishOptional<T>): Promise<T> {
+    const item = await this.dbContext.create(data);
+    return item;
   }
 
-  create(data: Omit<T, 'id' | 'createdDate'>): T | null {
-    const newData = { ...data, createdDate: new Date(), id: this.generateId() };
-    this.dbContext.push(newData as T);
-    dbAdapter.write();
-    return { ...this.dbContext.find((item) => item.id === newData.id) } as T;
+  async update(id: string, updatedData: Partial<T>): Promise<T> {
+    const item = await this.dbContext.findByPk(id);
+    if (!item) throw notFoundError(id);
+    const newItem = await item.update(updatedData);
+    return newItem;
   }
 
-  update(updatedItem: T): T | null {
-    const index = this.dbContext.findIndex((item) => item.id === updatedItem.id);
-    if (index === -1) return null;
-    this.dbContext[index] = updatedItem;
-    dbAdapter.write();
-    return updatedItem;
-  }
-
-  delete(id: string): boolean {
-    const index = this.dbContext.findIndex((item) => item.id === id);
-    if (index === -1) return false;
-    this.dbContext.splice(index, 1);
-    return true;
+  async delete(id: string): Promise<boolean> {
+    const item = await this.dbContext.findByPk(id);
+    if (!item) throw notFoundError(id);
+    const deletedItemCount = item.destroy();
+    return !!deletedItemCount;
   }
 }
 
