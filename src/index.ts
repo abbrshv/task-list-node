@@ -18,7 +18,7 @@ initRoutes(app);
 
 app.use('/', express.static('./client/build'));
 
-app.listen(process.env.PORT, () => {});
+app.listen(process.env.PORT || 3050, () => {});
 
 addMockData();
 
