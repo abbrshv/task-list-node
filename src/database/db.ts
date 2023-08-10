@@ -2,7 +2,7 @@ import { Sequelize } from 'sequelize-typescript';
 import Task from './models/Task.js';
 
 const sequelize = new Sequelize(
-  process.env.DB_SCHEMA || 'postgres',
+  process.env.DB_NAME || 'postgres',
   process.env.DB_USER || 'postgres',
   process.env.DB_PASSWORD || '',
   {
