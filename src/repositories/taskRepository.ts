@@ -1,8 +1,9 @@
 import BaseRepository from './BaseRepository.js';
+import Task from '../database/models/Task.js';
 
-class TaskRepository extends BaseRepository<DTask> {
+class TaskRepository extends BaseRepository<Task> {
   constructor() {
-    super('tasks');
+    super(Task);
   }
 }
 
