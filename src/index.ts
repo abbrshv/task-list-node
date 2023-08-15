@@ -1,8 +1,13 @@
 import cors from 'cors';
 import express from 'express';
+import dotenv from 'dotenv';
 import initRoutes from './routes/routes.js';
-import './database/db.js';
 import addMockData from './helpers/mockData.js';
+import sequelize from './database/db.js';
+
+dotenv.config();
+
+await sequelize.sync({ force: true });
 
 const app = express();
 
@@ -14,8 +19,7 @@ initRoutes(app);
 
 app.use('/', express.static('./client/build'));
 
-const port = 3050;
-app.listen(port, () => {});
+app.listen(process.env.PORT || 3050, () => {});
 
 addMockData();
 

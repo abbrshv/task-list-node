@@ -6,10 +6,10 @@ import updateTaskSchema from '../middleware/updateTaskSchema.js';
 
 const router = Router();
 
-router.post('/', validate(newTaskSchema), (req: Request, res: Response) => {
+router.post('/', validate(newTaskSchema), async (req: Request, res: Response) => {
   try {
     const newTask: ETask = { ...req.body };
-    const result = taskService.create(newTask);
+    const result = await taskService.create(newTask);
 
     res.status(201).json(result);
   } catch (error: any) {
@@ -19,10 +19,10 @@ router.post('/', validate(newTaskSchema), (req: Request, res: Response) => {
   }
 });
 
-router.delete('/:id', (req: Request, res: Response) => {
+router.delete('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const result = taskService.delete(id);
+    const result = await taskService.delete(id);
 
     res.status(200).json({ deleted: result });
   } catch (error: any) {
@@ -32,10 +32,10 @@ router.delete('/:id', (req: Request, res: Response) => {
   }
 });
 
-router.patch('/:id', validate(updateTaskSchema), (req: Request, res: Response) => {
+router.patch('/:id', validate(updateTaskSchema), async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const result = taskService.update(id, { ...req.body });
+    const result = await taskService.update(id, { ...req.body });
 
     res.status(200).json(result);
   } catch (error: any) {
@@ -45,9 +45,9 @@ router.patch('/:id', validate(updateTaskSchema), (req: Request, res: Response) =
   }
 });
 
-router.get('/stats', (req: Request, res: Response) => {
+router.get('/stats', async (req: Request, res: Response) => {
   try {
-    const result = taskService.getStats();
+    const result = await taskService.getStats();
     res.status(200).json(result);
   } catch (error: any) {
     res
@@ -56,9 +56,9 @@ router.get('/stats', (req: Request, res: Response) => {
   }
 });
 
-router.get('/', (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
   try {
-    const result = taskService.getAll();
+    const result = await taskService.getAll();
     res.status(200).json(result);
   } catch (error: any) {
     res
@@ -67,10 +67,10 @@ router.get('/', (req: Request, res: Response) => {
   }
 });
 
-router.get('/:id', (req: Request, res: Response) => {
+router.get('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const result = taskService.get(id);
+    const result = await taskService.get(id);
 
     res.status(200).json(result);
   } catch (error: any) {
