@@ -9,6 +9,16 @@ schema validation. It also comes with Docker files to run in containers.
 
 ## Installation
 
+Run commands (non-containerized):
+
+```
+npm install
+npm run build
+npm run start
+```
+
+&nbsp;
+
 Run commands (containerized):
 
 ```
@@ -19,16 +29,6 @@ OR
 
 ```
 docker-compose up
-```
-
-&nbsp;
-
-Run commands (non-containerized):
-
-```
-npm install
-npm run build
-npm run start
 ```
 
 &nbsp;
