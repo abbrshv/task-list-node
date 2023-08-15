@@ -3,7 +3,7 @@
 Test assignment solution
 
 A simple Node.js/Express Typescript application with a few REST endpoints.
-This branch uses postgreSQL with sequelize-typescript instead of lowdb for data
+This branch uses postgreSQL with sequelize-typescript for data
 storage and Yup for
 schema validation. It also comes with Docker files to run in containers.
 
